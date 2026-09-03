@@ -798,6 +798,11 @@ header { background: rgba(9,13,28,.76); border-bottom: 1px solid rgba(148,163,18
 .data-set-row { display:grid; grid-template-columns:1fr auto; gap:8px; }
 .data-set-row .btn-add { width:auto; padding-inline:16px; white-space:nowrap; }
 .data-set-preview { margin-top:10px; color:#a5b4fc; font-size:.78rem; line-height:1.7; min-height:24px; }
+.member-details { display:grid; grid-template-columns:58px 1fr 90px; gap:8px; align-items:center; min-width:0; }
+.member-real-name,.member-nickname { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.member-nickname { color:#67e8f9; font-size:.78rem; }
+.member-nickname::before { content:'เล่น: '; color:#64748b; }
+.winner-nickname-display { color:#67e8f9; font-size:1.15rem; margin-top:3px; }
 .wheel-wrapper { position:relative; isolation:isolate; }
 .wheel-wrapper::before { content:''; position:absolute; inset:-16px; border-radius:50%; background:conic-gradient(from 0deg, #00d4ff, #7c5cff, #ff2e93, #ffd600, #00d4ff); filter:blur(18px); opacity:.26; z-index:-1; animation: haloSpin 8s linear infinite; }
 .wheel-wrapper::after { content:'พร้อมสุ่ม'; position:absolute; left:50%; bottom:-8px; transform:translateX(-50%); padding:5px 14px; border-radius:999px; color:#dbeafe; background:rgba(15,23,42,.82); border:1px solid rgba(0,212,255,.35); font-size:.72rem; letter-spacing:.08em; }

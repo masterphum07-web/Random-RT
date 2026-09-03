@@ -138,12 +138,16 @@
         }
 
         filtered.forEach(m => {
+            const displayName = splitMemberName(m);
             const card = document.createElement('div');
             card.className = `member-card ${m.active === false ? 'excluded' : ''}`;
             card.innerHTML = `
                 <div class="member-info">
-                    ${m.code ? `<span class="member-code-badge">${escapeHtml(m.code)}</span>` : ''}
-                    <span class="member-name">${escapeHtml(m.name)}</span>
+                    <div class="member-details">
+                        <span class="member-code-badge">${escapeHtml(m.code || '—')}</span>
+                        <span class="member-name member-real-name">${escapeHtml(displayName.name)}</span>
+                        <span class="member-nickname">${escapeHtml(displayName.nickname || '—')}</span>
+                    </div>
                 </div>
                 <div class="member-actions">
                     <button class="btn-card-action toggle-active ${m.active !== false ? 'active' : 'inactive'}" title="${m.active !== false ? 'ตัดชื่อออกชั่วคราว' : 'เปิดใช้งานในวงล้อ'}">
@@ -241,6 +245,11 @@
         );
     }
 
+    function splitMemberName(member) {
+        const match = (member.name || '').match(/^(.*?)(?:\s*\((.*)\))?$/);
+        return { name: match && match[1] ? match[1].trim() : (member.name || ''), nickname: match && match[2] ? match[2].trim() : '' };
+    }
+
     function handleWinnerSelected(winner) {
         currentWinner = winner;
         const stage = document.querySelector('.wheel-wrapper');
@@ -277,7 +286,9 @@
         } else {
             codeDisplay.style.display = 'none';
         }
-        document.getElementById('modalWinnerName').textContent = winner.name;
+        const winnerName = splitMemberName(winner);
+        document.getElementById('modalWinnerName').textContent = winnerName.name;
+        document.getElementById('modalWinnerNickname').textContent = winnerName.nickname ? `ชื่อเล่น: ${winnerName.nickname}` : '';
         modal.classList.add('active');
 
         const autoRemove = document.getElementById('autoRemoveCheck').checked;
