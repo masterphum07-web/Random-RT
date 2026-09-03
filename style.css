@@ -785,7 +785,13 @@ canvas#wheelCanvas {
 }
 /* UI refresh: clean glass cards, stronger hierarchy, and better Thai readability */
 :root { --accent: #7c5cff; --accent-2: #00d4ff; --bg-deep: #090d1c; --bg-card: rgba(18, 25, 49, .82); }
-body { background: radial-gradient(circle at 15% 10%, rgba(124,92,255,.18), transparent 32%), radial-gradient(circle at 85% 80%, rgba(0,212,255,.12), transparent 30%), var(--bg-deep); }
+body { background: radial-gradient(circle at 15% 10%, rgba(124,92,255,.18), transparent 32%), radial-gradient(circle at 85% 80%, rgba(0,212,255,.12), transparent 30%), var(--bg-deep); color:#f8fafc; font-family:'Prompt',system-ui,sans-serif; }
+.data-set-actions { display:grid; grid-template-columns:1fr auto auto; gap:7px; margin-top:9px; }
+.data-set-actions .btn-icon { padding:8px 10px; white-space:nowrap; }
+.danger-soft { color:#fda4af; border-color:rgba(244,63,94,.3); }
+.member-name,.winner-name-display { color:#fff; font-weight:700; text-shadow:0 1px 12px rgba(255,255,255,.12); }
+.winner-name-display { letter-spacing:.01em; }
+.member-card { box-shadow:0 5px 18px rgba(0,0,0,.12); }
 header { background: rgba(9,13,28,.76); border-bottom: 1px solid rgba(148,163,184,.16); backdrop-filter: blur(18px); }
 .logo-icon { filter: drop-shadow(0 0 14px rgba(0,212,255,.5)); }
 .side-panel, .wheel-stage-container { background: var(--bg-card); border: 1px solid rgba(148,163,184,.18); box-shadow: 0 24px 70px rgba(0,0,0,.26); backdrop-filter: blur(16px); }

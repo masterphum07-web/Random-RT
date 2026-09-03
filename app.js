@@ -10,6 +10,7 @@
 
     let members = [];
     let history = [];
+    let dataSets = {};
     let wheel = null;
     let currentWinner = null;
 
@@ -22,6 +23,7 @@
 
             const savedHistory = localStorage.getItem('lucky_wheel_history');
             history = savedHistory ? JSON.parse(savedHistory) : [];
+            dataSets = JSON.parse(localStorage.getItem('lucky_wheel_datasets') || '{}');
 
             const savedTopic = localStorage.getItem('lucky_wheel_topic');
             if (savedTopic) {
@@ -44,6 +46,7 @@
             localStorage.setItem('lucky_wheel_history', JSON.stringify(history));
             localStorage.setItem('lucky_wheel_topic', document.getElementById('topicInput').value);
             localStorage.setItem('lucky_wheel_autoremove', document.getElementById('autoRemoveCheck').checked);
+            localStorage.setItem('lucky_wheel_datasets', JSON.stringify(dataSets));
             localStorage.setItem('lucky_wheel_data_version', DATA_VERSION);
         } catch (e) {
             console.error('Failed to save data', e);
@@ -229,6 +232,13 @@
         preview.textContent = active.length ? `ตัวอย่าง: ${active.slice(0, 5).map(m => m.name).join(' • ')}${active.length > 5 ? ` • และอีก ${active.length - 5} คน` : ''}` : 'ชุดนี้ยังไม่มีรายชื่อที่เปิดใช้งาน';
     }
 
+    function renderDataSets() {
+        const select = document.getElementById('dataSetSelect');
+        Object.keys(dataSets).forEach(key => {
+            if (!select.querySelector(`option[value="${key}"]`)) select.insertAdjacentHTML('beforeend', `<option value="${escapeHtml(key)}">${escapeHtml(dataSets[key].name)} • ${dataSets[key].members.length} คน</option>`);
+        });
+    }
+
     function updateWheel() {
         if (wheel) {
             wheel.setItems(members);
@@ -354,15 +364,32 @@
         renderMemberList();
         renderHistoryList();
         renderDataSetPreview();
+        renderDataSets();
 
         document.getElementById('loadDataSetBtn').addEventListener('click', () => {
             if (window.soundEngine) window.soundEngine.playClick(700);
-            members = JSON.parse(JSON.stringify(RT06_MEMBERS));
+            const key = document.getElementById('dataSetSelect').value;
+            members = key === 'rt06' ? JSON.parse(JSON.stringify(RT06_MEMBERS)) : JSON.parse(JSON.stringify(dataSets[key].members));
             saveData();
             renderMemberList();
             renderDataSetPreview();
             updateWheel();
             document.querySelector('[data-tab="tabMembers"]').click();
+        });
+
+        document.getElementById('saveDataSetBtn').addEventListener('click', () => {
+            const name = document.getElementById('newDataSetName').value.trim();
+            if (!name) return alert('กรุณาตั้งชื่อชุดข้อมูลก่อนบันทึก');
+            const key = `set-${Date.now()}`;
+            dataSets[key] = { name, members: JSON.parse(JSON.stringify(members)) };
+            saveData(); renderDataSets(); document.getElementById('dataSetSelect').value = key; document.getElementById('newDataSetName').value = '';
+            alert(`บันทึกชุด “${name}” แล้ว`);
+        });
+
+        document.getElementById('deleteDataSetBtn').addEventListener('click', () => {
+            const select = document.getElementById('dataSetSelect'); const key = select.value;
+            if (key === 'rt06') return alert('ชุด RT06 เป็นชุดหลัก ลบไม่ได้');
+            if (confirm(`ลบชุด “${dataSets[key].name}” หรือไม่?`)) { delete dataSets[key]; saveData(); select.querySelector(`option[value="${key}"]`).remove(); select.value = 'rt06'; }
         });
 
         let isMuted = false;
