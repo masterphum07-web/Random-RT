@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>วงล้อสุ่มผู้โชคดี & รหัสประจำตัว (Lucky Wheel Pro)</title>
+    <!-- Google Fonts: Prompt -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Confetti Canvas overlay -->
+    <canvas id="confettiCanvas"></canvas>
+
+    <!-- Top Navigation -->
+    <header>
+        <div class="logo-container">
+            <span class="logo-icon">🎡</span>
+            <div class="logo-text">
+                <h1>LUCKY WHEEL PRO</h1>
+                <p>ระบบสุ่มวงล้อลุ้นระทึกพร้อมรหัสประจำตัว</p>
+            </div>
+        </div>
+        <div class="header-controls">
+            <button id="muteToggleBtn" class="btn-icon" title="เปิด/ปิดเสียง">
+                🔊 <span>เสียงเอฟเฟกต์</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Workspace -->
+    <main class="main-content">
+        <!-- Left: Wheel Stage -->
+        <section class="wheel-stage-container">
+            <div class="suspense-spotlight" id="suspenseSpotlight"></div>
+
+            <!-- Topic Title Bar -->
+            <div class="topic-banner">
+                <div class="topic-input-wrapper">
+                    <span class="topic-badge">หัวข้อการสุ่ม</span>
+                    <input type="text" id="topicInput" class="topic-input" placeholder="เช่น รางวัลที่ 1 : สร้อยคอทองคำ หรือ ตอบคำถามชิงรางวัล" value="สุ่มผู้โชคดี">
+                </div>
+                <span>🎯</span>
+            </div>
+
+            <!-- Canvas Wheel -->
+            <div class="wheel-wrapper">
+                <canvas id="wheelCanvas" width="540" height="540"></canvas>
+            </div>
+
+            <!-- Spin Controls -->
+            <div class="spin-action-container">
+                <button id="spinBtn" class="btn-spin">
+                    <span>⚡ หมุนวงล้อลุ้นระทึก!</span>
+                </button>
+                <div class="spin-options-bar">
+                    <label class="custom-checkbox">
+                        <input type="checkbox" id="autoRemoveCheck">
+                        <span>ลบชื่อผู้ชนะออกจากวงล้ออัตโนมัติ (ห้ามออกซ้ำ)</span>
+                    </label>
+                </div>
+            </div>
+        </section>
+
+        <!-- Right: Management Side Panel -->
+        <aside class="side-panel">
+            <div class="tab-header">
+                <button class="tab-btn active" data-tab="tabMembers">👥 จัดการรายชื่อ</button>
+                <button class="tab-btn" data-tab="tabImport">📥 Google Sheets / นำเข้า</button>
+                <button class="tab-btn" data-tab="tabHistory">🏆 ประวัติผู้ชนะ</button>
+            </div>
+
+            <div class="tab-content">
+                <!-- TAB 1: MEMBERS -->
+                <div class="tab-pane active" id="tabMembers">
+                    <!-- Add Member Box -->
+                    <div class="add-member-card">
+                        <div class="form-row">
+                            <input type="text" id="newMemberCode" class="input-code" placeholder="รหัส เช่น 023" title="รหัสประจำตัว (เว้นว่างได้)">
+                            <input type="text" id="newMemberName" class="input-name" placeholder="ชื่อ-นามสกุล หรือ ฉายา...">
+                        </div>
+                        <button id="addMemberBtn" class="btn-add">➕ เพิ่มรายชื่อในวงล้อ</button>
+                    </div>
+
+                    <!-- Filter / Search Toolbar -->
+                    <div class="list-toolbar">
+                        <div class="search-box">
+                            <span class="search-icon">🔍</span>
+                            <input type="text" id="searchInput" class="input-search" placeholder="ค้นหารายชื่อ หรือ รหัส...">
+                        </div>
+                        <div class="badge-count" id="memberCountBadge">0 คน</div>
+                    </div>
+
+                    <!-- Scrollable List of Members -->
+                    <div class="member-list-wrapper" id="memberList"></div>
+
+                    <!-- Bottom Quick Tools -->
+                    <div class="list-footer-tools">
+                        <button id="enableAllBtn" class="btn-icon" style="justify-content: center;">👁️ เปิดทั้งหมด</button>
+                        <button id="resetPresetBtn" class="btn-icon" style="justify-content: center;">🔄 ข้อมูลตัวอย่าง</button>
+                        <button id="clearAllBtn" class="btn-icon" style="grid-column: span 2; justify-content: center; color: #ff5252;">🗑️ ล้างรายชื่อทั้งหมด</button>
+                    </div>
+                </div>
+
+                <!-- TAB 2: GOOGLE SHEETS / IMPORT -->
+                <div class="tab-pane" id="tabImport">
+                    <div class="sheet-import-box">
+                        <div class="sheet-guide">
+                            💡 <b>วิธีดึงจาก Google Sheets:</b><br>
+                            1. เปิด Google Sheet ที่มีคอลัมน์ [รหัส] และ [ชื่อ]<br>
+                            2. ไปที่ <b>แชร์ (Share)</b> -> ตั้งค่าเป็น <b>ทุกคนที่มีลิงก์ (Anyone with the link)</b><br>
+                            3. คัดลอกลิงก์มาวางในช่องด้านล่าง แล้วกดดึงข้อมูลได้ทันที!
+                        </div>
+
+                        <div>
+                            <label style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 6px; display: block;">ลิงก์ Google Sheets สาธารณะ:</label>
+                            <input type="text" id="sheetUrlInput" class="input-name" style="width: 100%; margin-bottom: 10px;" placeholder="https://docs.google.com/spreadsheets/d/...">
+                            <button id="fetchSheetBtn" class="btn-add" style="background: linear-gradient(90deg, #00b0ff, #00e676); color: #000;">📥 ดึงข้อมูลจาก Google Sheets</button>
+                        </div>
+
+                        <hr style="border: 0; border-top: 1px solid var(--bg-card-border); margin: 6px 0;">
+
+                        <div>
+                            <label style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 6px; display: block;">หรือ Copy & Paste จาก Excel / ชีตลงที่นี่:</label>
+                            <textarea id="pasteTextarea" class="textarea-paste" placeholder="ตัวอย่าง:&#10;001	สมชาย&#10;002	สมหญิง&#10;023	ธนวัฒน์&#10;(คั่นด้วย Tab หรือลูกน้ำ Comma)"></textarea>
+                            <button id="processPasteBtn" class="btn-add" style="margin-top: 10px;">📋 นำเข้ารายชื่อที่วาง</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB 3: WINNER HISTORY -->
+                <div class="tab-pane" id="tabHistory">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+                        <span style="font-size: 0.9rem; color: var(--text-secondary);">รายชื่อผู้โชคดีที่ผ่านมา</span>
+                        <button id="clearHistoryBtn" class="btn-icon" style="padding: 4px 10px; font-size: 0.8rem;">ล้างประวัติ</button>
+                    </div>
+                    <div class="member-list-wrapper" id="historyList"></div>
+                </div>
+            </div>
+        </aside>
+    </main>
+
+    <!-- WINNER CELEBRATION MODAL -->
+    <div class="modal-overlay" id="winnerModal">
+        <div class="winner-card-modal">
+            <span class="winner-badge">🎉 ยินดีด้วย! ผู้โชคดี 🎉</span>
+            <div class="winner-topic-tag" id="modalTopic">รางวัลที่ 1</div>
+            <div>
+                <span class="winner-code-display" id="modalCode">รหัส: 023</span>
+            </div>
+            <div class="winner-name-display" id="modalWinnerName">คุณสมชาย</div>
+            
+            <div class="winner-actions-row">
+                <button id="closeModalBtn" class="btn-modal-primary">✨ ยอดเยี่ยม / ปิดหน้าต่าง</button>
+                <button id="removeWinnerBtn" class="btn-modal-remove">❌ ลบชื่อนี้ออกจากวงล้อ</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="audio.js"></script>
+    <script src="wheel.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
