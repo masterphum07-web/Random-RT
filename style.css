@@ -799,6 +799,7 @@ header { background: rgba(9,13,28,.76); border-bottom: 1px solid rgba(148,163,18
 .data-set-row .btn-add { width:auto; padding-inline:16px; white-space:nowrap; }
 .data-set-preview { margin-top:10px; color:#a5b4fc; font-size:.78rem; line-height:1.7; min-height:24px; }
 .member-details { display:grid; grid-template-columns:58px 1fr 90px; gap:8px; align-items:center; min-width:0; }
+.member-column-labels { display:grid; grid-template-columns:58px 1fr 90px; gap:8px; padding:0 16px 6px; color:#64748b; font-size:.7rem; letter-spacing:.04em; }
 .member-real-name,.member-nickname { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 .member-nickname { color:#67e8f9; font-size:.78rem; }
 .member-nickname::before { content:'เล่น: '; color:#64748b; }
