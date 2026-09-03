@@ -792,6 +792,13 @@ header { background: rgba(9,13,28,.76); border-bottom: 1px solid rgba(148,163,18
 .topic-banner { background: linear-gradient(135deg, rgba(124,92,255,.22), rgba(0,212,255,.10)); border-color: rgba(124,92,255,.35); }
 .btn-spin { background: linear-gradient(135deg, #7c5cff, #00b8ff); box-shadow: 0 12px 28px rgba(84,88,255,.35); }
 .btn-spin:hover { transform: translateY(-2px); filter: brightness(1.08); }
+.wheel-stage-container { transition: transform .25s ease, filter .25s ease; }
+.wheel-stage-container.is-spinning { animation: stagePulse 1.2s ease-in-out infinite; }
+body.screen-shake { animation: screenShake .42s cubic-bezier(.36,.07,.19,.97) both; }
+body.winner-flash::after { content: ''; position: fixed; inset: 0; pointer-events: none; background: rgba(255,255,255,.28); animation: flashFade .65s ease-out forwards; z-index: 20; }
+@keyframes stagePulse { 50% { transform: translateY(-3px) scale(1.006); filter: saturate(1.18); } }
+@keyframes screenShake { 10%,90%{transform:translateX(-2px)} 20%,80%{transform:translateX(4px)} 30%,50%,70%{transform:translateX(-6px)} 40%,60%{transform:translateX(6px)} }
+@keyframes flashFade { from { opacity: 1; } to { opacity: 0; } }
 .member-card { border-radius: 14px; border-color: rgba(148,163,184,.14); background: rgba(255,255,255,.035); }
 .member-card:hover { border-color: rgba(0,212,255,.45); background: rgba(0,212,255,.06); transform: translateX(2px); }
 .member-code-badge { background: rgba(124,92,255,.18); border-color: rgba(124,92,255,.42); }
