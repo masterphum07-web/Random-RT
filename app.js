@@ -218,6 +218,13 @@
         });
     }
 
+    function renderDataSetPreview() {
+        const preview = document.getElementById('dataSetPreview');
+        if (!preview) return;
+        const active = members.filter(m => m.active !== false);
+        preview.textContent = active.length ? `ตัวอย่าง: ${active.slice(0, 5).map(m => m.name).join(' • ')}${active.length > 5 ? ` • และอีก ${active.length - 5} คน` : ''}` : 'ชุดนี้ยังไม่มีรายชื่อที่เปิดใช้งาน';
+    }
+
     function updateWheel() {
         if (wheel) {
             wheel.setItems(members);
@@ -335,6 +342,17 @@
         updateWheel();
         renderMemberList();
         renderHistoryList();
+        renderDataSetPreview();
+
+        document.getElementById('loadDataSetBtn').addEventListener('click', () => {
+            if (window.soundEngine) window.soundEngine.playClick(700);
+            members = JSON.parse(JSON.stringify(RT06_MEMBERS));
+            saveData();
+            renderMemberList();
+            renderDataSetPreview();
+            updateWheel();
+            document.querySelector('[data-tab="tabMembers"]').click();
+        });
 
         let isMuted = false;
         const muteBtn = document.getElementById('muteToggleBtn');
@@ -375,6 +393,7 @@
 
             saveData();
             renderMemberList();
+            renderDataSetPreview();
             updateWheel();
         }
 
